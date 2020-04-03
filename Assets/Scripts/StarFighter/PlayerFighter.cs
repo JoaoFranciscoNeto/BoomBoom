@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,14 +9,10 @@ using UnityEngine;
 namespace Assets.Scripts.StarFighter
 {
     [RequireComponent(typeof(BaseFighter))]
-    public class PlayerFighter : MonoBehaviour
+    public class PlayerFighter : FighterInput
     {
         private BaseFighter _baseFighter;
 
-        public float Throttle;
-        public float Pitch;
-        public float Yaw;
-        public float Roll;
         public float Strafe;
 
         public const KeyCode ThrottleIncrease = KeyCode.W;
@@ -24,12 +21,8 @@ namespace Assets.Scripts.StarFighter
 
         public float DeadZone = .1f;
 
-        private Transform body;
-
         void Start()
         {
-            body = transform.Find("Body").transform;
-
             _baseFighter = gameObject.GetComponent<BaseFighter>();
 
             Cursor.lockState = CursorLockMode.Confined;
@@ -37,39 +30,29 @@ namespace Assets.Scripts.StarFighter
 
         void Update()
         {
-            RotateInput();
+            RotationInput();
             ThrustInput();
-
-            _baseFighter.Thrust(Throttle, Strafe);
-            _baseFighter.Rotate(Pitch,Yaw,0);
         }
 
-        private void RotateInput()
+        private void RotationInput()
         {
             var mousePos = Input.mousePosition;
 
             mousePos.y = (mousePos.y - (Screen.height * 0.5f)) / (Screen.height * 0.5f);
             mousePos.x = (mousePos.x - (Screen.width * 0.5f)) / (Screen.width * 0.5f);
+            Pitch = -Mathf.Clamp(mousePos.y, -1.0f, 1.0f);
+            Yaw = -Mathf.Clamp(mousePos.x, -1.0f, 1.0f);
 
-            if (mousePos.magnitude <= DeadZone)
-            {
-                Pitch = 0;
-                Yaw = 0;
-            }
-            else
-            {
-                Pitch = -Mathf.Clamp(mousePos.y, -1.0f, 1.0f);
-                Yaw = -Mathf.Clamp(mousePos.x, -1.0f, 1.0f);
-            }
-            
-            var currentAngle = Vector3.SignedAngle(transform.up, body.up, transform.forward);
-            var desiredAngle = Mathf.Lerp(-45, 45, (Yaw / 2) + .5f);
-
-            var rotationAngle = desiredAngle - currentAngle;
-
-            body.Rotate(0,0,Mathf.Lerp(0,rotationAngle,Time.deltaTime*20f));
+            RotationDeadZone();
         }
 
+        private void RotationDeadZone()
+        {
+            Pitch = Math.Abs(Pitch) < DeadZone ? 0 : Pitch;
+            Yaw = Math.Abs(Yaw) < DeadZone ? 0 : Yaw;
+
+            Debug.Log(Pitch + " " + Yaw);
+        }
 
         private void ThrustInput()
         {

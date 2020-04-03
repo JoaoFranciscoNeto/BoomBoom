@@ -17,7 +17,7 @@ public class SmoothCam : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         var toPos = Target.position + (Target.rotation * DefaultDistance);
         var curPos = Vector3.SmoothDamp(transform.position, toPos, ref _velocity, DistanceDamp);

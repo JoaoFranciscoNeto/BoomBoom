@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.StarFighter;
 using UnityEngine;
 
+[RequireComponent(typeof(FighterInput))]
 public class BaseFighter : MonoBehaviour
 {
     [SerializeField]
@@ -19,15 +18,43 @@ public class BaseFighter : MonoBehaviour
 
     private Thruster[] _thrusters;
 
+    private Rigidbody _rigidBody;
+
+    private FighterInput _input;
+
+    private Transform _body;
+
     // Start is called before the first frame update
     void Start()
     {
         _thrusters = GetComponentsInChildren<Thruster>();
+        _rigidBody = GetComponent<Rigidbody>();
+        _input = GetComponent<FighterInput>();
+
+        _body = transform.Find("Body").transform;
+        if (_body == null)
+        {
+            Debug.LogError($"Body not found in {transform.name}");
+        }
+
+    }
+
+    private void FixedUpdate()
+    {
+        Rotate(_input.Pitch,_input.Yaw,_input.Roll);
+        Thrust(_input.Throttle,0);
     }
 
     public void Rotate(float pitch, float yaw, float roll)
     {
-        transform.Rotate(pitch * _pitchPower * Time.deltaTime, -yaw * _yawPower * Time.deltaTime, -transform.right.y * _rollPower * Time.deltaTime);
+        _rigidBody.AddRelativeTorque(new Vector3(pitch * _pitchPower, -yaw * _yawPower, -transform.right.y * _rollPower) * 100f,ForceMode.Force);
+
+        var currentAngle = Vector3.SignedAngle(transform.up, _body.up, transform.forward);
+        var desiredAngle = Mathf.Lerp(-45, 45, (yaw / 2) + .5f);
+
+        var rotationAngle = desiredAngle - currentAngle;
+
+        //_body.Rotate(0,0,Mathf.Lerp(0,rotationAngle,Time.deltaTime*20f));
     }
 
     public void Thrust(float throttle, float strafe)
@@ -37,15 +64,20 @@ public class BaseFighter : MonoBehaviour
             thruster.Activate(throttle);
         }
 
-        var throttleVector = transform.forward * Time.deltaTime * throttle * _thrustPower;
-        var strafeVector = transform.right * Time.deltaTime * strafe * _strafePower;
+        var throttleVector = Vector3.forward * throttle * _thrustPower;
+        var strafeVector = Vector3.right * strafe * _strafePower;
 
         var combinedVector = (throttleVector + strafeVector);
-        transform.position += combinedVector;
-    }
 
+        _rigidBody.AddRelativeForce(combinedVector * 100f,ForceMode.Force);
+    }
     public void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, transform.position + Vector3.up);
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision with " + collision.other.name);
     }
 }
