@@ -51,7 +51,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 056903cdd3aeb4341995aac5fa7af508, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -72,7 +72,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 2
+  m_Time: 10
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.5
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd64a50b4209a64582e63a76760d51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trailWidth: 0
+  _trailWidth: 0.2
 --- !u!1 &1723372822647563811
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,8 +196,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 7, y: 1, z: 2.52}
-  m_Center: {x: 0, y: 0, z: -0.5}
+  m_Size: {x: 7, y: 1, z: 2.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &5113056150610690242
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -258,11 +258,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83848f5c450a52043a718ba5a9d1969f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thrustPower: 40
-  _strafePower: 10
-  _pitchPower: 20
-  _yawPower: 10
-  _rollPower: 10
+  _thrustPower: 100
+  _strafePower: 50
+  _pitchPower: 200
+  _yawPower: 200
+  _rollPower: 100
 --- !u!114 &3785049835342582705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,8 +275,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74fc580b6fca3a4c8428156b07b514d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Strafe: 0
-  DeadZone: 0.25
+  pitchSensitivity: 2.5
+  yawSensitivity: 2.5
+  rollSensitivity: 1
+  _maxBankAngle: 35
+  DeadZone: 0.1
 --- !u!54 &5555444866673793025
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -286,11 +289,11 @@ Rigidbody:
   m_GameObject: {fileID: 3785049835342582706}
   serializedVersion: 2
   m_Mass: 100
-  m_Drag: 1
+  m_Drag: 2
   m_AngularDrag: 5
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &4021698262337039456
@@ -351,7 +354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8179163075793727360}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.63, y: 0, z: 22.65}
+  m_LocalPosition: {x: -0.58, y: 0, z: -1.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7658022202085158390}
@@ -376,7 +379,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 056903cdd3aeb4341995aac5fa7af508, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -397,15 +400,15 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 2
+  m_Time: 10
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.10190964
+        time: 0
         value: 1
         inSlope: 0
         outSlope: 0
@@ -461,7 +464,7 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
-  m_Autodestruct: 1
+  m_Autodestruct: 0
   m_Emitting: 1
 --- !u!114 &832445438787199852
 MonoBehaviour:
@@ -475,7 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd64a50b4209a64582e63a76760d51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trailWidth: 0
+  _trailWidth: 0.2
 --- !u!1001 &3610938063186724924
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -538,6 +541,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: d73a9c59dc5f2b5439ec0af46a0f487e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
     - target: {fileID: -927199367670048503, guid: d73a9c59dc5f2b5439ec0af46a0f487e,
         type: 3}
       propertyPath: m_Name

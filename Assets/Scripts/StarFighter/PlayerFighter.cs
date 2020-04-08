@@ -11,61 +11,60 @@ namespace Assets.Scripts.StarFighter
     [RequireComponent(typeof(BaseFighter))]
     public class PlayerFighter : FighterInput
     {
-        private BaseFighter _baseFighter;
 
-        public float Strafe;
+        [Header("Responsiveness")]
+        [Tooltip("Sensitivity in the pitch axis.\n\nIt's best to play with this value until you can get something the results in full input when at the edge of the screen.")]
+        [SerializeField] private float pitchSensitivity = 2.5f;
+        [Tooltip("Sensitivity in the yaw axis.\n\nIt's best to play with this value until you can get something the results in full input when at the edge of the screen.")]
+        [SerializeField] private float yawSensitivity = 2.5f;
+        [Tooltip("Sensitivity in the roll axis.\n\nTweak to make responsive enough.")]
+        [SerializeField] private float rollSensitivity = 1f;
 
         public const KeyCode ThrottleIncrease = KeyCode.W;
         public const KeyCode ThrottleDecrease = KeyCode.S;
         public const float ThrottleSensitivity = .5f;
 
+        [SerializeField] private float bankLimit = 35f;
+
+        [SerializeField]
+        private float _maxBankAngle = 35f;
+
         public float DeadZone = .1f;
 
-        void Start()
+        void Awake()
         {
-            _baseFighter = gameObject.GetComponent<BaseFighter>();
-
             Cursor.lockState = CursorLockMode.Confined;
         }
 
         void Update()
         {
+            Throttle = 1f;
+
             RotationInput();
-            ThrustInput();
         }
 
         private void RotationInput()
         {
+            var targetPoint = GetTargetPoint();
+
+            var localTargetPoint = transform.InverseTransformVector(targetPoint - transform.position).normalized;
+            var angleOff = Vector3.Angle(transform.forward, targetPoint - transform.position);
+
+            var rollToTarget = -Mathf.Clamp(localTargetPoint.x, -1f, 1f);
+            var rollToLevel = -transform.right.y;
+            var levelInfluence = Mathf.InverseLerp(0f, bankLimit, angleOff);
+
+            Pitch = Mathf.Clamp(-localTargetPoint.y * pitchSensitivity, -1f, 1f);
+            Yaw = Mathf.Clamp(-localTargetPoint.x * yawSensitivity, -1f, 1f);
+            Roll = Mathf.Lerp(rollToLevel, rollToTarget, levelInfluence);
+        }
+
+        private Vector3 GetTargetPoint()
+        {
             var mousePos = Input.mousePosition;
-
-            mousePos.y = (mousePos.y - (Screen.height * 0.5f)) / (Screen.height * 0.5f);
-            mousePos.x = (mousePos.x - (Screen.width * 0.5f)) / (Screen.width * 0.5f);
-            Pitch = -Mathf.Clamp(mousePos.y, -1.0f, 1.0f);
-            Yaw = -Mathf.Clamp(mousePos.x, -1.0f, 1.0f);
-
-            RotationDeadZone();
-        }
-
-        private void RotationDeadZone()
-        {
-            Pitch = Math.Abs(Pitch) < DeadZone ? 0 : Pitch;
-            Yaw = Math.Abs(Yaw) < DeadZone ? 0 : Yaw;
-
-            Debug.Log(Pitch + " " + Yaw);
-        }
-
-        private void ThrustInput()
-        {
-            Strafe = Input.GetAxis("Horizontal");
-
-            var target = Throttle;
-
-            if (Input.GetKey(ThrottleIncrease))
-                target = 1.0f;
-            else if (Input.GetKey(ThrottleDecrease))
-                target = 0.0f;
-
-            Throttle = Mathf.MoveTowards(Throttle, target, Time.deltaTime * ThrottleSensitivity);
+            mousePos.z = 1000f;
+            var targetPos = Camera.main.ScreenToWorldPoint(mousePos);
+            return targetPos;
         }
     }
 }
