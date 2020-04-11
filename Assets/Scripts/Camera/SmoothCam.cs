@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,10 @@ public class SmoothCam : MonoBehaviour
 {
     public Transform Target;
     public Vector3 DefaultDistance = new Vector3(0f, 2f, -10f);
-    public float DistanceDamp = 10f;
+    public float Damp = 10f;
+
+    [SerializeField]
+    private AnimationCurve upInfluence;
 
     private Vector3 _velocity = Vector3.one;
 
@@ -16,12 +20,17 @@ public class SmoothCam : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        var toPos = Target.position + (Target.rotation * DefaultDistance);
-        var curPos = Vector3.SmoothDamp(transform.position, toPos, ref _velocity, DistanceDamp);
-        transform.position = curPos;
+        transform.position = Target.position;
 
-        transform.LookAt(Target, Target.up);
+        //var upVector = (Mathf.Abs(Target.forward.y) > .9f) ? Target.up : Vector3.up;
+
+        var evaluatedInfluence = upInfluence.Evaluate(Math.Abs(Target.forward.y));
+        Debug.Log(evaluatedInfluence);
+        var upVector = Vector3.Lerp( Vector3.up, Target.up, evaluatedInfluence);
+
+        var targetRigRotation = Quaternion.LookRotation(Target.forward, upVector);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRigRotation, Damp * Time.deltaTime);
     }
 }

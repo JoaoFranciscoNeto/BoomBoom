@@ -26,9 +26,6 @@ namespace Assets.Scripts.StarFighter
 
         [SerializeField] private float bankLimit = 35f;
 
-        [SerializeField]
-        private float _maxBankAngle = 35f;
-
         public float DeadZone = .1f;
 
         void Awake()
