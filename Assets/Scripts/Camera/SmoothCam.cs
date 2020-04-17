@@ -27,7 +27,6 @@ public class SmoothCam : MonoBehaviour
         //var upVector = (Mathf.Abs(Target.forward.y) > .9f) ? Target.up : Vector3.up;
 
         var evaluatedInfluence = upInfluence.Evaluate(Math.Abs(Target.forward.y));
-        Debug.Log(evaluatedInfluence);
         var upVector = Vector3.Lerp( Vector3.up, Target.up, evaluatedInfluence);
 
         var targetRigRotation = Quaternion.LookRotation(Target.forward, upVector);

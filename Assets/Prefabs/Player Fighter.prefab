@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1508910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1508911}
+  - component: {fileID: 1508912}
+  m_Layer: 8
+  m_Name: Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1508911
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508910}
+  m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.038931, z: 0.4621}
+  m_LocalScale: {x: 1.2637403, y: 1.2637403, z: 1.2637403}
+  m_Children: []
+  m_Father: {fileID: 3785049835342582704}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 0}
+--- !u!64 &1508912
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508910}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: d73a9c59dc5f2b5439ec0af46a0f487e, type: 3}
 --- !u!1 &1066443154282730455
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +288,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4696398862563261577}
+  - {fileID: 1508911}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -258,11 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83848f5c450a52043a718ba5a9d1969f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thrustPower: 100
-  _strafePower: 50
-  _pitchPower: 200
-  _yawPower: 200
-  _rollPower: 100
+  LinearForce: {x: 100, y: 100, z: 500}
+  AngularForce: {x: 50, y: 50, z: 100}
 --- !u!114 &3785049835342582705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,10 +318,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74fc580b6fca3a4c8428156b07b514d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pitchSensitivity: 2.5
-  yawSensitivity: 2.5
+  pitchSensitivity: 2
+  yawSensitivity: 2
   rollSensitivity: 1
-  _maxBankAngle: 35
+  bankLimit: 15
   DeadZone: 0.1
 --- !u!54 &5555444866673793025
 Rigidbody:
@@ -293,7 +336,7 @@ Rigidbody:
   m_AngularDrag: 5
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &4021698262337039456
