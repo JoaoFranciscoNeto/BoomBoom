@@ -1,4 +1,4 @@
-name: Build project
+name: Build uunity project
 
 on:
   pull_request: {}
