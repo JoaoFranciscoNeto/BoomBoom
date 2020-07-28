@@ -32,6 +32,11 @@ jobs:
           restore-keys: |
             Library-${{ matrix.projectPath }}-
             Library-
+      - name: Unity - Activate
+        uses: webbertakken/unity-activate@v1.2
+        with:
+          # Version of unity to use for building the project.
+          unityVersion: 2020.1.0b5
       - uses: webbertakken/unity-builder@v1.1
         with:
           projectPath: ${{ matrix.projectPath }}
