@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -21,6 +24,8 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+      with:
+        lfs: true
       
     # Cache
     - uses: actions/cache@v1.1.0
@@ -35,3 +40,9 @@ jobs:
         unityVersion: 2020.1.0b5
         # Platform that the build should target.
         targetPlatform: WebGL
+        
+    # Output
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Build
+        path: build
